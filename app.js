@@ -1,7 +1,10 @@
-// Register SW
+// Register SW with relative scope for GitHub Pages subpaths
 if ("serviceWorker" in navigator) {
   window.addEventListener("load", () => {
-    navigator.serviceWorker.register("/sw.js").catch(console.error);
+    navigator.serviceWorker.register("./sw.js").then(
+      (reg) => console.log("SW registered", reg.scope),
+      (err) => console.warn("SW registration failed", err)
+    );
   });
 }
 
@@ -11,7 +14,6 @@ const iosHelp = document.getElementById("iosHelp");
 
 let deferredPrompt = null;
 
-// Detect iOS standalone and redirect directly
 function isStandalone() {
   return window.matchMedia("(display-mode: standalone)").matches || window.navigator.standalone === true;
 }
@@ -21,10 +23,8 @@ function isIOS() {
 }
 
 if (isStandalone()) {
-  // Launch app: redirect to target URL
   window.location.replace("https://piarligapd-sf.webnode.sk/");
 } else {
-  // Help banner for iOS (cannot auto-prompt)
   if (isIOS()) {
     iosHelp.style.display = "block";
   }
@@ -40,13 +40,12 @@ window.addEventListener("beforeinstallprompt", (e) => {
 installBtn?.addEventListener("click", async () => {
   if (!deferredPrompt) return;
   deferredPrompt.prompt();
-  const { outcome } = await deferredPrompt.userChoice;
-  statusEl.textContent = outcome === "accepted" ? "Nainštalované." : "Inštalácia zrušená.";
+  const choice = await deferredPrompt.userChoice;
+  statusEl.textContent = choice.outcome === "accepted" ? "Nainštalované." : "Inštalácia zrušená.";
   deferredPrompt = null;
   installBtn.hidden = true;
 });
 
-// Optional: if opened from Android install banner, Chrome may open in standalone directly
 document.addEventListener("visibilitychange", () => {
   if (isStandalone() && document.visibilityState === "visible") {
     window.location.replace("https://piarligapd-sf.webnode.sk/");

@@ -1,10 +1,10 @@
-const CACHE = "launcher-cache-v1";
-const OFFLINE_URL = "/offline.html";
+const CACHE = "launcher-cache-v2";
+const OFFLINE_URL = "offline.html";
 
 self.addEventListener("install", (event) => {
   event.waitUntil((async () => {
     const cache = await caches.open(CACHE);
-    await cache.addAll(["/", "/index.html", "/app.js", "/manifest.webmanifest", OFFLINE_URL, "/icons/icon-192.png", "/icons/icon-512.png"]);
+    await cache.addAll(["./", "index.html", "app.js", "manifest.webmanifest", OFFLINE_URL, "icons/icon-192.png", "icons/icon-512.png"]);
   })());
   self.skipWaiting();
 });
@@ -15,7 +15,6 @@ self.addEventListener("activate", (event) => {
 
 self.addEventListener("fetch", (event) => {
   const { request } = event;
-  // For navigation requests, try network then offline page
   if (request.mode === "navigate") {
     event.respondWith((async () => {
       try {
@@ -31,15 +30,13 @@ self.addEventListener("fetch", (event) => {
     })());
     return;
   }
-  // For other requests, try cache first, then network
   event.respondWith((async () => {
     const cache = await caches.open(CACHE);
     const cached = await cache.match(request);
     if (cached) return cached;
     try {
       const network = await fetch(request);
-      // Optionally cache new assets
-      if (request.url.startsWith(self.location.origin)) {
+      if (new URL(request.url).origin === self.location.origin) {
         cache.put(request, network.clone());
       }
       return network;
