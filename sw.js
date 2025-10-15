@@ -1,4 +1,4 @@
-const CACHE = "launcher-cache-v2";
+const CACHE = "launcher-cache-v3";
 const OFFLINE_URL = "offline.html";
 
 self.addEventListener("install", (event) => {
@@ -24,8 +24,7 @@ self.addEventListener("fetch", (event) => {
         return network;
       } catch (err) {
         const cache = await caches.open(CACHE);
-        const cached = await cache.match(OFFLINE_URL);
-        return cached;
+        return (await cache.match(OFFLINE_URL)) || Response.error();
       }
     })());
     return;
@@ -36,9 +35,7 @@ self.addEventListener("fetch", (event) => {
     if (cached) return cached;
     try {
       const network = await fetch(request);
-      if (new URL(request.url).origin === self.location.origin) {
-        cache.put(request, network.clone());
-      }
+      if (new URL(request.url).origin === self.location.origin) {{ cache.put(request, network.clone()); }}
       return network;
     } catch (err) {
       return cached || Response.error();

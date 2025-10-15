@@ -2,9 +2,12 @@
   "id": "./",
   "name": "Liga PD – Piaristi",
   "short_name": "Liga PD",
-  "start_url": "./",
+  "start_url": "./?source=pwa",
   "scope": "./",
   "display": "standalone",
+  "display_override": [
+    "standalone"
+  ],
   "background_color": "#ffffff",
   "theme_color": "#0d9488",
   "icons": [
@@ -12,7 +15,7 @@
       "src": "icons/icon-192.png",
       "sizes": "192x192",
       "type": "image/png",
-      "purpose": "any"
+      "purpose": "any maskable"
     },
     {
       "src": "icons/icon-512.png",
