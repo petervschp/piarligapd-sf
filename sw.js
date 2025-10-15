@@ -1,4 +1,4 @@
-const CACHE = "launcher-cache-v3";
+const CACHE = "launcher-cache-v4";
 const OFFLINE_URL = "offline.html";
 
 self.addEventListener("install", (event) => {

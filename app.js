@@ -1,4 +1,4 @@
-// Register SW with relative scope
+// Service worker registration
 if ("serviceWorker" in navigator) {
   window.addEventListener("load", () => {
     navigator.serviceWorker.register("./sw.js").catch(console.warn);
@@ -8,13 +8,12 @@ if ("serviceWorker" in navigator) {
 const installBtn = document.getElementById("installBtn");
 let deferredPrompt = null;
 
-// If opened as installed app, use true fullscreen and navigate top-level
 function isStandalone() {
   return window.matchMedia("(display-mode: standalone)").matches || window.navigator.standalone === true;
 }
 
 if (isStandalone()) {
-  // Replace with target to remove any browser UI remnants
+  // Launch straight into target site, full-screen
   window.location.replace("https://piarligapd-sf.webnode.sk/");
 }
 
